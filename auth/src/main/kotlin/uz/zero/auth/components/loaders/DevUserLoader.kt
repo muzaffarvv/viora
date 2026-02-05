@@ -28,7 +28,7 @@ class DevUserLoader(
 
 
     private fun createDevUser() {
-        try {
+        try {  // TODO
             val username = "dev"
             if (userRepository.findByUsernameAndDeletedFalse(username) != null) return
             logger.info("Creating dev user...")

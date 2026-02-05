@@ -19,7 +19,7 @@ class JwtAuthenticationConverter(
     override fun convert(source: Jwt): JwtAuthenticationToken {
         val userDetailsJson = getHeader(USER_DETAILS_HEADER_KEY)?.decompress()
         val userDetails = userDetailsJson?.run { objectMapper.readValue(this, UserInfoResponse::class.java) }
-        val username = userDetails?.username ?: source.getUsername()
+        val username = userDetails?.phoneNum ?: source.getUsername()
         val authorities = mutableListOf<SimpleGrantedAuthority>()
         if (userDetails != null) {
             authorities.add(SimpleGrantedAuthority("ROLE_${userDetails.role}"))

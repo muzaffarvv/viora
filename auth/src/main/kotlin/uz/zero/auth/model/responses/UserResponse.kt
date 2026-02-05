@@ -5,5 +5,5 @@ data class UserResponse(
     val firstName: String,
     val lastName: String?,
     val phoneNum: String,
-    val role: String
+    val role: String,
 )
