@@ -18,14 +18,14 @@ data class UserCreateRequest(
     @field:NotSpace
     val phoneNum: String,
 
-    @field:Size(min = 8)
+    @field:Size(min = 6)
     @field:Pattern.List(
         value = [
             Pattern(regexp = ".*[a-z].*", message = "PASSWORD_LOWER_CASE_ERROR"),
             Pattern(regexp = ".*[A-Z].*", message = "PASSWORD_UPPER_CASE_ERROR"),
             Pattern(regexp = ".*\\d.*", message = "PASSWORD_DIGIT_ERROR"),
             Pattern(
-                regexp = ".*[~!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*",
+                regexp = ".*[~!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*",
                 message = "PASSWORD_EXTRA_CHARACTER_ERROR"
             )
         ]
