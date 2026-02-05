@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="auth-service" target="17" />
+      <module name="file-store" target="17" />
+      <module name="file-store.main" target="17" />
+      <module name="file-store.test" target="17" />
+      <module name="organization.main" target="17" />
+      <module name="organization.test" target="17" />
+      <module name="task-management" target="17" />
+      <module name="task-management.main" target="17" />
+      <module name="task-management.test" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="auth" options="-parameters" />
+      <module name="auth-service" options="-parameters" />
+      <module name="auth.main" options="-parameters" />
+      <module name="auth.test" options="-parameters" />
+      <module name="config" options="-parameters" />
+      <module name="config.main" options="-parameters" />
+      <module name="config.test" options="-parameters" />
+      <module name="file-service" options="-parameters" />
+      <module name="file-service.main" options="-parameters" />
+      <module name="file-service.test" options="-parameters" />
+      <module name="file-store" options="-parameters" />
+      <module name="file-store.main" options="-parameters" />
+      <module name="file-store.test" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="gateway.main" options="-parameters" />
+      <module name="gateway.test" options="-parameters" />
+      <module name="organization-service" options="-parameters" />
+      <module name="organization-service.main" options="-parameters" />
+      <module name="organization-service.test" options="-parameters" />
+      <module name="organization.main" options="-parameters" />
+      <module name="organization.test" options="-parameters" />
+      <module name="task-management" options="-parameters" />
+      <module name="task-management.main" options="-parameters" />
+      <module name="task-management.test" options="-parameters" />
+      <module name="task-service" options="-parameters" />
+      <module name="task-service.main" options="-parameters" />
+      <module name="task-service.test" options="-parameters" />
+    </option>
+  </component>
+</project>

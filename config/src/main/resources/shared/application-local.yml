@@ -1,0 +1,22 @@
+services:
+  hosts:
+    gateway: http://localhost:8080
+    auth: http://localhost:8081
+#    payment: http://localhost:8082
+#    product: http://localhost:8083
+#TODO bu namuna
+
+  ports:
+    gateway: 8080
+    auth: 8081
+#    payment: 8082
+#    product: 8083
+#TODO bu namuna
+
+spring:
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: ${services.hosts.auth}
+        user-info-uri: ${services.hosts.auth}/internal/user-info

@@ -1,0 +1,14 @@
+server:
+  port: ${SERVICE_PORT:8888}
+spring:
+  cloud:
+    config:
+      server:
+        composite:
+          - type: native
+            search-locations: classpath:/shared
+  profiles:
+    active: composite
+  security:
+    user:
+      password: ${CONFIG_PASSWORD:ff6e045a-f86d-401e-96bf-bfe654add3be}
