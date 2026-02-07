@@ -19,8 +19,8 @@ interface BaseRepository<T : BaseEntity> : JpaRepository<T, Long>, JpaSpecificat
     fun findByIdAndDeletedFalse(id: Long): T?
     fun trash(id: Long): T?
     fun trashList(ids: List<Long>): List<T?>
-    fun findAllNotDeleted(): List<T>
-    fun findAllNotDeleted(pageable: Pageable): Page<T>
+    fun findAllByDeletedFalse(): List<T>
+    fun findAllByDeletedFalse(pageable: Pageable): Page<T>
 }
 
 
@@ -38,8 +38,8 @@ class BaseRepositoryImpl<T : BaseEntity>(
         save(this)
     }
 
-    override fun findAllNotDeleted(): List<T> = findAll(isNotDeletedSpecification)
-    override fun findAllNotDeleted(pageable: Pageable): Page<T> = findAll(isNotDeletedSpecification, pageable)
+    override fun findAllByDeletedFalse(): List<T> = findAll(isNotDeletedSpecification)
+    override fun findAllByDeletedFalse(pageable: Pageable): Page<T> = findAll(isNotDeletedSpecification, pageable)
     override fun trashList(ids: List<Long>): List<T?> = ids.map { trash(it) }
 }
 
@@ -47,7 +47,10 @@ class BaseRepositoryImpl<T : BaseEntity>(
 interface TaskRepository: BaseRepository<Task>
 
 @Repository
-interface TaskStateRepository: BaseRepository<TaskState>
+interface TaskStateRepository: BaseRepository<TaskState> {
+    fun findByNameAndBoardIdAndDeletedFalse(name: String, boardId: Long): TaskState?
+    fun findAllByBoardIdAndDeletedFalse(boardId: Long): List<TaskState>
+}
 
 @Repository
 interface ProjectRepository: BaseRepository<Project>
@@ -59,4 +62,6 @@ interface BoardRepository: BaseRepository<Board>
 interface TaskFileRepository: BaseRepository<TaskFile>
 
 @Repository
-interface AccountTaskRepository: BaseRepository<AccountTask>
+interface AccountTaskRepository: BaseRepository<AccountTask> {
+    fun findAllByTaskIdAndDeletedFalse(taskId: Long): List<AccountTask>
+}

@@ -9,8 +9,7 @@ data class CreateTaskRequest(
     val dueDate: Date,
     val maxEmployee: Int,
     val priority: Int,
-    val boardId: Long,
-    val taskStateId: Long
+    val boardId: Long
 )
 
 data class UpdateTaskRequest(
@@ -18,8 +17,12 @@ data class UpdateTaskRequest(
     val description: String?,
     val dueDate: Date?,
     val maxEmployee: Int?,
-    val priority: Int?,
-    val taskStateId: Long?
+    val priority: Int?
+)
+
+data class MoveTaskRequest(
+    val taskStateId: Long,
+    val assigneeId: Long
 )
 
 data class TaskResponse(
@@ -36,7 +39,8 @@ data class TaskResponse(
 
 data class CreateTaskStateRequest(
     val name: String,
-    val code: String
+    val code: String,
+    val boardId: Long
 )
 
 data class UpdateTaskStateRequest(
@@ -106,7 +110,8 @@ data class BoardResponse(
     val code: String,
     val title: String,
     val active: Boolean,
-    val project: ProjectSummaryResponse
+    val project: ProjectSummaryResponse,
+    val taskStates: List<TaskStateResponse>
 )
 
 fun Board.toResponse() = BoardResponse(
@@ -118,7 +123,8 @@ fun Board.toResponse() = BoardResponse(
     project = ProjectSummaryResponse(
         id = projectId.id!!,
         name = projectId.name
-    )
+    ),
+    taskStates = taskStates.map { it.toResponse() }
 )
 
 data class CreateTaskFileRequest(

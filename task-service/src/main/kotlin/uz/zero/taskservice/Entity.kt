@@ -1,5 +1,6 @@
 package uz.zero.taskservice
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
@@ -50,7 +51,9 @@ class Task(
 @Entity
 class TaskState(
     var name: String, // New
-    var code: String // NEW
+    var code: String, // NEW
+    @ManyToOne(fetch = FetchType.LAZY)
+    var board: Board
 ):BaseEntity()
 
 @Entity
@@ -67,7 +70,9 @@ class Board(
     var title: String,
     @ManyToOne(fetch = FetchType.LAZY)
     var projectId: Project,
-    var active: Boolean
+    var active: Boolean,
+    @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var taskStates: MutableList<TaskState> = mutableListOf()
 ):BaseEntity()
 
 @Entity
