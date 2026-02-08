@@ -4,9 +4,9 @@ import org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAu
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
@@ -21,6 +21,8 @@ import uz.zero.auth.model.security.CustomUserDetails
 import uz.zero.auth.components.AuthServerAuthenticationConverter
 import uz.zero.auth.components.AuthServerAuthenticationProvider
 import uz.zero.auth.components.JwtAuthenticationConverter
+import uz.zero.auth.constants.JWT_ORGANIZATION_ID_KEY
+import uz.zero.auth.feign.OrganizationClient
 
 @Configuration
 class AuthorizationServerConfig {
@@ -64,6 +66,8 @@ class AuthorizationServerConfig {
                     }
             }
 
+        // ENABLE: Basic Auth for Client Authentication (ClientId/Secret)
+//        http.httpBasic(org.springframework.security.config.Customizer.withDefaults())
         return http.build()
     }
 
@@ -76,6 +80,7 @@ class AuthorizationServerConfig {
         return http
             .authorizeHttpRequests {
                 it
+                    .requestMatchers("/register", "/login").permitAll()
                     .requestMatchers("/user/**").permitAll()
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
@@ -94,24 +99,56 @@ class AuthorizationServerConfig {
     //Spring Authorization Serverda yaratilayotgan token
     // (JWT) ning ichiga qo'shimcha ma'lumotlarni qo'shib yuborish uchun ishlatiladigan interfeys.
     @Bean
-    fun jwtCustomizer(): OAuth2TokenCustomizer<JwtEncodingContext> {
+    fun jwtCustomizer(organizationClient: OrganizationClient): OAuth2TokenCustomizer<JwtEncodingContext> {
         return OAuth2TokenCustomizer { context ->
             if (context.tokenType == OAuth2TokenType.ACCESS_TOKEN) {
-                val principal = context.getPrincipal<UsernamePasswordAuthenticationToken>()?.principal
 
-                if (principal != null && principal is CustomUserDetails) {
-                    context.claims.claim(JWT_USER_ID_KEY, principal.getUserId())
-                    context.claims.claim(JWT_ROLE_KEY, principal.getRole())
+                val authentication = context.getPrincipal<Authentication>()
+                val principal = authentication.principal
+
+                if (principal is CustomUserDetails) {
+
+                    val userId = principal.getUserId()
+
+                    // CHECK: First, check if a specific organization context was requested (via attributes).
+                    // This allows for explicit organization switching without changing the "active" org in DB.
+                    val explicitOrgId = context.authorization?.attributes?.get(JWT_ORGANIZATION_ID_KEY) as? Long
+
+                    val orgIdToUse = explicitOrgId ?: try {
+                        // FALLBACK: If no explicit org requested, use the user's active organization.
+                        organizationClient.getActiveOrganization(userId).organizationId
+                    } catch (e: Exception) {
+                        // RESILIENCE: formatting or service errors shouldn't block login if the user has no org.
+                        // We proceed without the claim.
+                        null
+                    }
+
+                    context.claims.claim(JWT_USER_ID_KEY, userId)
+                    context.claims.claim(JWT_ROLE_KEY, principal.authorities.map { it.authority })
+                    
+                    if (orgIdToUse != null) {
+                        context.claims.claim(JWT_ORGANIZATION_ID_KEY, orgIdToUse)
+                    }
                 }
             }
         }
     }
 
+
     @Bean
-    fun delegatingOAuth2TokenGenerator(jwtEncoder: JwtEncoder): DelegatingOAuth2TokenGenerator {
-        val tokenGenerator = JwtGenerator(jwtEncoder)
-        tokenGenerator.setJwtCustomizer(jwtCustomizer())
-        return DelegatingOAuth2TokenGenerator(tokenGenerator, OAuth2RefreshTokenGenerator())
+    fun delegatingOAuth2TokenGenerator(
+        jwtEncoder: JwtEncoder,
+        jwtCustomizer: OAuth2TokenCustomizer<JwtEncodingContext>  // <-- Bean sifatida olinadi
+    ): DelegatingOAuth2TokenGenerator {
+
+        val jwtGenerator = JwtGenerator(jwtEncoder)
+        jwtGenerator.setJwtCustomizer(jwtCustomizer)   // <-- bu yerda bean to‘g‘ri keladi
+
+        return DelegatingOAuth2TokenGenerator(
+            jwtGenerator,
+            OAuth2RefreshTokenGenerator()
+        )
     }
+
 
 }

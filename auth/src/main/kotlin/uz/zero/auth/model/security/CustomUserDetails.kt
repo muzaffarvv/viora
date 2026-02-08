@@ -7,6 +7,7 @@ class CustomUserDetails(
     private val id: Long,
     private val phoneNumber: String,
     private val password: String,
+    private val organizationId: Long?,
     private val authorities: Set<GrantedAuthority>,
     private val enabled: Boolean
 ) : UserDetails {
@@ -24,4 +25,5 @@ class CustomUserDetails(
     override fun isCredentialsNonExpired() = true
 
     fun getUserId() = id
+    fun getOrganizationId() = organizationId
 }

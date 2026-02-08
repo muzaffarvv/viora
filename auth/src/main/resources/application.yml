@@ -10,3 +10,9 @@ spring:
       uri: ${CONFIG_URI:http://localhost:8888}
       username: user
       password: ${CONFIG_PASSWORD:nimadirxavfsizlik}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty: DEBUG
