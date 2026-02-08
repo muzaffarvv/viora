@@ -118,7 +118,7 @@ class AuthorizationServerConfig {
                         // FALLBACK: If no explicit org requested, use the user's active organization.
                         organizationClient.getActiveOrganization(userId).organizationId
                     } catch (e: Exception) {
-                        // RESILIENCE: formatting or service errors shouldn't block login if user has no org.
+                        // RESILIENCE: formatting or service errors shouldn't block login if the user has no org.
                         // We proceed without the claim.
                         null
                     }
