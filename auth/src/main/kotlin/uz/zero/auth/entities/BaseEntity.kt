@@ -2,7 +2,6 @@ package uz.zero.auth.entities
 
 import jakarta.persistence.*
 import org.hibernate.annotations.ColumnDefault
-import org.springframework.boot.context.properties.bind.DefaultValue
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -33,7 +32,6 @@ class BaseEntity(
     var lastModifiedBy: Long? = null,
 
     @Column(nullable = false)
-    @DefaultValue("true")
     var active: Boolean = true,
 
     @Column(nullable = false)

@@ -16,6 +16,9 @@ class AuthServerAuthenticationConverter : AuthenticationConverter {
         val grantTypeParameter = request.getParameter("grant_type") ?: return null
         val grantType = AuthServerGrantType.findByKey(grantTypeParameter) ?: return null
         val clientPrincipal: OAuth2ClientAuthenticationToken = getClientPrincipal() ?: return null
-        return AuthServerAuthenticationToken(request.parameterMap, grantType, clientPrincipal)
+        // EXTRACTION: We now support explicit organization context via 'organization_id' parameter.
+        // This allows users to request tokens for a specific organization (switching context).
+        val organizationId = request.getParameter("organization_id")?.toLongOrNull()
+        return AuthServerAuthenticationToken(request.parameterMap, grantType, organizationId, clientPrincipal)
     }
 }

@@ -7,7 +7,7 @@ spring:
         issuer: http://localhost:8081
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${PG_URL:jdbc:postgresql://localhost:5432/ssvv}
+    url: ${PG_URL:jdbc:postgresql://localhost:5432/viora_db}
     username: ${PG_USER:postgres}
     password: ${PG_PASSWORD:admin}
     hikari:

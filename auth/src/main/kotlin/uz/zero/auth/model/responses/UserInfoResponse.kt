@@ -8,6 +8,7 @@ data class UserInfoResponse(
     val lastName: String?,
     val phoneNum: String,
     val role: String,
+    val orgId: Long?,
     val createdAt: Date?,
     val updatedAt: Long?,
     val active: Boolean,

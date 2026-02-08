@@ -37,13 +37,12 @@ class SecurityConfig {
             .authorizeExchange {
                 it
                     .pathMatchers("/actuator/**").permitAll()
-                    .pathMatchers("/api/v1/auth/user/register").permitAll()
+                    .pathMatchers("/api/v1/auth/register").permitAll()
                     .pathMatchers("/api/v1/auth/oauth2/**").permitAll()
                     .pathMatchers("/error").permitAll()
                     .anyExchange().access(monoPathManager())
             }.build()
     }
-
 
     @Suppress("ReactorTransformationOnMonoVoid")
     @Bean
