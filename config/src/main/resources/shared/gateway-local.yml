@@ -13,13 +13,12 @@ spring:
         - LoggingGlobalFilter
         - RestrictedPathFilter
       routes:
-
-        - id: payment-route
-          uri: ${services.hosts.payment}
+        - id: organization-route
+          uri: ${services.hosts.organization}
           predicates:
-            - Path=/api/v1/payment/**
+            - Path=/api/v1/organization/**
           filters:
-            - RewritePath=/api/v1/payment(?<remaining>/?.*), /${remaining}
+            - RewritePath=/api/v1/organization(?<remaining>/?.*), /${remaining}
 
         - id: auth-route
           uri: ${services.hosts.auth}
@@ -28,10 +27,5 @@ spring:
           filters:
             - RewritePath=/api/v1/auth(?<remaining>/?.*), /${remaining}
 
-        - id: product-route
-          uri: ${services.hosts.product}
-          predicates:
-            - Path=/api/v1/product/**
-          filters:
-              - RewritePath=/api/v1/product(?<remaining>/?.*), /${remaining}
+
 
