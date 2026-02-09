@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 import org.springframework.data.repository.NoRepositoryBean
@@ -56,7 +57,10 @@ interface TaskStateRepository: BaseRepository<TaskState> {
 interface ProjectRepository: BaseRepository<Project>
 
 @Repository
-interface BoardRepository: BaseRepository<Board>
+interface BoardRepository: BaseRepository<Board>{
+//    @Query("SELECT b FROM Board b WHERE b.projectId = :projectId AND b.deleted = FALSE")
+//    fun findAllByProjectIdAndDeletedFalse(projectId: Long): List<Board>
+}
 
 @Repository
 interface TaskFileRepository: BaseRepository<TaskFile>

@@ -23,6 +23,7 @@ interface ProjectService {
 interface BoardService {
     fun create(request: CreateBoardRequest): BoardResponse
     fun getById(id: Long): BoardResponse
+//    fun getByProjectId(projectId: Long): List<BoardResponse>
     fun getAll(): List<BoardResponse>
     fun update(id: Long, request: UpdateBoardRequest): BoardResponse
     fun delete(id: Long)
@@ -206,6 +207,10 @@ class BoardServiceImpl(
         return boardRepository.findByIdAndDeletedFalse(id)?.toResponse()
             ?: throw NotFoundException("Board not found with id: $id")
     }
+//
+//    override fun getByProjectId(projectId: Long): List<BoardResponse> {
+//        return boardRepository.findAllByProjectIdAndDeletedFalse(projectId).map{it.toResponse()}
+//    }
 
     override fun getAll(): List<BoardResponse> {
         return boardRepository.findAllByDeletedFalse().map { it.toResponse() }

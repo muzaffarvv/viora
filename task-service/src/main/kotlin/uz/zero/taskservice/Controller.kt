@@ -9,39 +9,34 @@ import org.springframework.web.bind.annotation.*
 class TaskController(private val taskService: TaskService) {
 
     @PostMapping
-    fun createTask(@RequestBody request: CreateTaskRequest): ResponseEntity<TaskResponse> {
-        val task = taskService.create(request)
-        return ResponseEntity(task, HttpStatus.CREATED)
+    fun createTask(@RequestBody request: CreateTaskRequest): TaskResponse {
+        return taskService.create(request)
     }
 
     @GetMapping("/{id}")
-    fun getTaskById(@PathVariable id: Long): ResponseEntity<TaskResponse> {
-        val task = taskService.getById(id)
-        return ResponseEntity.ok(task)
+    fun getTaskById(@PathVariable id: Long): TaskResponse {
+        return taskService.getById(id)
     }
 
     @GetMapping
-    fun getAllTasks(): ResponseEntity<List<TaskResponse>> {
-        val tasks = taskService.getAll()
-        return ResponseEntity.ok(tasks)
+    fun getAllTasks(): List<TaskResponse> {
+        return taskService.getAll()
+
     }
 
     @PutMapping("/{id}")
-    fun updateTaskDetails(@PathVariable id: Long, @RequestBody request: UpdateTaskRequest): ResponseEntity<TaskResponse> {
-        val updatedTask = taskService.updateDetails(id, request)
-        return ResponseEntity.ok(updatedTask)
+    fun updateTaskDetails(@PathVariable id: Long, @RequestBody request: UpdateTaskRequest): TaskResponse {
+        return taskService.updateDetails(id, request)
     }
 
     @PostMapping("/{id}/move")
-    fun moveTask(@PathVariable id: Long, @RequestBody request: MoveTaskRequest): ResponseEntity<TaskResponse> {
-        val movedTask = taskService.move(id, request)
-        return ResponseEntity.ok(movedTask)
+    fun moveTask(@PathVariable id: Long, @RequestBody request: MoveTaskRequest): TaskResponse {
+        return taskService.move(id, request)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteTask(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteTask(@PathVariable id: Long){
         taskService.delete(id)
-        return ResponseEntity.noContent().build()
     }
 }
 
@@ -50,33 +45,28 @@ class TaskController(private val taskService: TaskService) {
 class ProjectController(private val projectService: ProjectService) {
 
     @PostMapping
-    fun createProject(@RequestBody request: CreateProjectRequest): ResponseEntity<ProjectResponse> {
-        val project = projectService.create(request)
-        return ResponseEntity(project, HttpStatus.CREATED)
+    fun createProject(@RequestBody request: CreateProjectRequest): ProjectResponse {
+        return projectService.create(request)
     }
 
     @GetMapping("/{id}")
-    fun getProjectById(@PathVariable id: Long): ResponseEntity<ProjectResponse> {
-        val project = projectService.getById(id)
-        return ResponseEntity.ok(project)
+    fun getProjectById(@PathVariable id: Long): ProjectResponse {
+        return projectService.getById(id)
     }
 
     @GetMapping
-    fun getAllProjects(): ResponseEntity<List<ProjectResponse>> {
-        val projects = projectService.getAll()
-        return ResponseEntity.ok(projects)
+    fun getAllProjects(): List<ProjectResponse> {
+        return projectService.getAll()
     }
 
     @PutMapping("/{id}")
-    fun updateProject(@PathVariable id: Long, @RequestBody request: UpdateProjectRequest): ResponseEntity<ProjectResponse> {
-        val updatedProject = projectService.update(id, request)
-        return ResponseEntity.ok(updatedProject)
+    fun updateProject(@PathVariable id: Long, @RequestBody request: UpdateProjectRequest): ProjectResponse {
+        return projectService.update(id, request)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteProject(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteProject(@PathVariable id: Long) {
         projectService.delete(id)
-        return ResponseEntity.noContent().build()
     }
 }
 
@@ -85,9 +75,8 @@ class ProjectController(private val projectService: ProjectService) {
 class BoardController(private val boardService: BoardService) {
 
     @PostMapping
-    fun createBoard(@RequestBody request: CreateBoardRequest): ResponseEntity<BoardResponse> {
-        val board = boardService.create(request)
-        return ResponseEntity(board, HttpStatus.CREATED)
+    fun createBoard(@RequestBody request: CreateBoardRequest): BoardResponse {
+        return boardService.create(request)
     }
 
     @GetMapping("/{id}")
@@ -96,22 +85,25 @@ class BoardController(private val boardService: BoardService) {
         return ResponseEntity.ok(board)
     }
 
+//    @GetMapping
+//    fun getBoardsByProjectId(@RequestParam projectId: Long): ResponseEntity<List<BoardResponse>> {
+//        val boards = boardService.getByProjectId(projectId)
+//        return ResponseEntity.ok(boards)
+//    }
+
     @GetMapping
-    fun getAllBoards(): ResponseEntity<List<BoardResponse>> {
-        val boards = boardService.getAll()
-        return ResponseEntity.ok(boards)
+    fun getAllBoards(): List<BoardResponse> {
+        return boardService.getAll()
     }
 
     @PutMapping("/{id}")
-    fun updateBoard(@PathVariable id: Long, @RequestBody request: UpdateBoardRequest): ResponseEntity<BoardResponse> {
-        val updatedBoard = boardService.update(id, request)
-        return ResponseEntity.ok(updatedBoard)
+    fun updateBoard(@PathVariable id: Long, @RequestBody request: UpdateBoardRequest): BoardResponse {
+        return boardService.update(id, request)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteBoard(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteBoard(@PathVariable id: Long) {
         boardService.delete(id)
-        return ResponseEntity.noContent().build()
     }
 }
 
@@ -120,33 +112,28 @@ class BoardController(private val boardService: BoardService) {
 class TaskStateController(private val taskStateService: TaskStateService) {
 
     @PostMapping
-    fun createTaskState(@RequestBody request: CreateTaskStateRequest): ResponseEntity<TaskStateResponse> {
-        val taskState = taskStateService.create(request)
-        return ResponseEntity(taskState, HttpStatus.CREATED)
+    fun createTaskState(@RequestBody request: CreateTaskStateRequest): TaskStateResponse{
+        return taskStateService.create(request)
     }
 
     @GetMapping("/{id}")
-    fun getTaskStateById(@PathVariable id: Long): ResponseEntity<TaskStateResponse> {
-        val taskState = taskStateService.getById(id)
-        return ResponseEntity.ok(taskState)
+    fun getTaskStateById(@PathVariable id: Long): TaskStateResponse {
+        return taskStateService.getById(id)
     }
 
     @GetMapping
-    fun getTaskStatesByBoard(@RequestParam boardId: Long): ResponseEntity<List<TaskStateResponse>> {
-        val taskStates = taskStateService.getAllByBoard(boardId)
-        return ResponseEntity.ok(taskStates)
+    fun getTaskStatesByBoard(@RequestParam boardId: Long): List<TaskStateResponse> {
+        return taskStateService.getAllByBoard(boardId)
     }
 
     @PutMapping("/{id}")
-    fun updateTaskState(@PathVariable id: Long, @RequestBody request: UpdateTaskStateRequest): ResponseEntity<TaskStateResponse> {
-        val updatedTaskState = taskStateService.update(id, request)
-        return ResponseEntity.ok(updatedTaskState)
+    fun updateTaskState(@PathVariable id: Long, @RequestBody request: UpdateTaskStateRequest): TaskStateResponse {
+        return taskStateService.update(id, request)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteTaskState(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteTaskState(@PathVariable id: Long) {
         taskStateService.delete(id)
-        return ResponseEntity.noContent().build()
     }
 }
 
@@ -155,27 +142,23 @@ class TaskStateController(private val taskStateService: TaskStateService) {
 class TaskFileController(private val taskFileService: TaskFileService) {
 
     @PostMapping
-    fun createTaskFile(@RequestBody request: CreateTaskFileRequest): ResponseEntity<TaskFileResponse> {
-        val taskFile = taskFileService.create(request)
-        return ResponseEntity(taskFile, HttpStatus.CREATED)
+    fun createTaskFile(@RequestBody request: CreateTaskFileRequest): TaskFileResponse {
+        return taskFileService.create(request)
     }
 
     @GetMapping("/{id}")
-    fun getTaskFileById(@PathVariable id: Long): ResponseEntity<TaskFileResponse> {
-        val taskFile = taskFileService.getById(id)
-        return ResponseEntity.ok(taskFile)
+    fun getTaskFileById(@PathVariable id: Long): TaskFileResponse {
+        return taskFileService.getById(id)
     }
 
     @GetMapping
-    fun getAllTaskFiles(): ResponseEntity<List<TaskFileResponse>> {
-        val taskFiles = taskFileService.getAll()
-        return ResponseEntity.ok(taskFiles)
+    fun getAllTaskFiles(): List<TaskFileResponse> {
+        return taskFileService.getAll()
     }
 
     @DeleteMapping("/{id}")
-    fun deleteTaskFile(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteTaskFile(@PathVariable id: Long){
         taskFileService.delete(id)
-        return ResponseEntity.noContent().build()
     }
 }
 
@@ -184,26 +167,22 @@ class TaskFileController(private val taskFileService: TaskFileService) {
 class AccountTaskController(private val accountTaskService: AccountTaskService) {
 
     @PostMapping
-    fun assignAccountToTask(@RequestBody request: AssignAccountToTaskRequest): ResponseEntity<AccountTaskResponse> {
-        val accountTask = accountTaskService.assignAccountToTask(request)
-        return ResponseEntity(accountTask, HttpStatus.CREATED)
+    fun assignAccountToTask(@RequestBody request: AssignAccountToTaskRequest): AccountTaskResponse {
+        return accountTaskService.assignAccountToTask(request)
     }
 
     @GetMapping("/{id}")
-    fun getAccountTaskById(@PathVariable id: Long): ResponseEntity<AccountTaskResponse> {
-        val accountTask = accountTaskService.getById(id)
-        return ResponseEntity.ok(accountTask)
+    fun getAccountTaskById(@PathVariable id: Long): AccountTaskResponse {
+        return accountTaskService.getById(id)
     }
 
     @GetMapping
-    fun getAllAccountTasksByTaskId(@RequestParam taskId: Long): ResponseEntity<List<AccountTaskResponse>> {
-        val accountTasks = accountTaskService.getAllByTaskId(taskId)
-        return ResponseEntity.ok(accountTasks)
+    fun getAllAccountTasksByTaskId(@RequestParam taskId: Long): List<AccountTaskResponse> {
+        return accountTaskService.getAllByTaskId(taskId)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteAccountTask(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteAccountTask(@PathVariable id: Long) {
         accountTaskService.delete(id)
-        return ResponseEntity.noContent().build()
     }
 }
