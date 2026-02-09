@@ -54,7 +54,7 @@ interface OrganizationRepository : BaseRepository<Organization> {
     fun findByNameAndActive(name:String, active:Boolean): Organization?
     fun findByPhoneNumberAndActive(phoneNumber: String, active: Boolean): Organization?
     fun findByIdAndActive(id: Long, active: Boolean): Organization?
-
+    fun findByIdAndActiveTrue(id: Long) : Organization?
 }
 
 @Repository

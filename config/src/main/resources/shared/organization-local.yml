@@ -5,15 +5,18 @@ spring:
     name: organization
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/team
-    username: postgres
-    password: root123
-
-  jpa:
+    driver-class-name: org.postgresql.Driver
+    url: ${PG_URL:jdbc:postgresql://localhost:5432/viora_db}
+    username: ${PG_USER:postgres}
+    password: ${PG_PASSWORD:admin}
+    hikari:
+      schema: organization
+    jpa:
+      open-in-view: false
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        default_schema: organizations
-
+        default_schema: organization
     hibernate:
       ddl-auto: update
 

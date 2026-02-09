@@ -3,6 +3,7 @@ package uz.zero.auth.controllers
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import uz.zero.auth.model.requests.ChangeCurrentOrganizationRequest
 import uz.zero.auth.model.requests.UserCreateRequest
 import uz.zero.auth.model.requests.UserUpdateRequest
 import uz.zero.auth.model.responses.UserInfoResponse
@@ -25,6 +26,15 @@ class UserController(
 
     @GetMapping("/me")
     fun userMe(): UserInfoResponse = userServiceImpl.profile()
+
+    @PostMapping("/set-org")
+    fun setOrg(@RequestBody dto: ChangeCurrentOrganizationRequest): UserResponse =
+        userServiceImpl.setOrg(dto.userId, dto.newOrgId)
+
+    @GetMapping("/internal/user-info")
+    fun getUserInfo(): UserInfoResponse {
+        return userServiceImpl.profile()
+    }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): UserResponse {

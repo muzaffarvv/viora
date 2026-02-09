@@ -23,6 +23,8 @@ interface UserService {
     fun update(id: Long, updateDto: UserUpdateRequest): UserResponse
     fun delete(id: Long): Boolean
 
+    fun setOrg(userId: Long, orgId: Long): UserResponse
+
     fun checkPhoneNumber(phoneNum: String): Boolean
     fun getByPhoneNumber(phoneNum: String): UserResponse? // for admin
 }
@@ -83,6 +85,13 @@ class UserServiceImpl(
         val currentUserId = userId()
         val user = getUserById(currentUserId)
         return userMapper.toUserInfoResponse(user)
+    }
+
+    override fun setOrg(userId: Long, orgId: Long): UserResponse {
+        val user = getUserById(userId)
+        user.orgId = orgId
+        userRepository.save(user)
+        return userMapper.toUserResponse(user)
     }
 
 //    fun getUserEntityByPhone(phoneNum: String): User {

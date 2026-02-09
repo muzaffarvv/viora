@@ -3,15 +3,15 @@ services:
     gateway: http://localhost:8080
     auth: http://localhost:8081
     organization: http://localhost:8082
-#    product: http://localhost:8083
-#TODO bu namuna
+    task: http://localhost:8083
+    file: http://localhost:8084
 
   ports:
     gateway: 8080
     auth: 8081
     organization: 8082
-#    product: 8083
-#TODO bu namuna
+    task: 8083
+    file: 8084
 
 spring:
   security:

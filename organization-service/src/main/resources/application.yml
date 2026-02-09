@@ -9,3 +9,10 @@ spring:
 
   profiles:
     active: local
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+    reactor.netty: DEBUG

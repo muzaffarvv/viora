@@ -62,10 +62,9 @@ class EmployeeMapper{
         employee.run { 
             return EmployeeResponseOrganization(
                 id = id!!,
-                userId = userResponse.id!!,
-                fullName = userResponse.fullName,
-                phoneNumber = userResponse.phoneNumber,
-                age  = userResponse.age,
+                userId = userResponse.id,
+                fullName = userResponse.firstName,
+                phoneNumber = userResponse.phoneNum,
                 position = position
             )
         }

@@ -24,10 +24,10 @@ data class UserInfoResponse(
 
 data class UserResponse(
     val id: Long,
-    val fullName: String,
-    val phoneNumber:String,
-    val age:Long,
-    val username: String,
+    val firstName: String,
+    val lastName: String?,
+    val phoneNum: String,
+    val orgId: Long?,
     val role: String,
 )
 
@@ -80,7 +80,6 @@ data class EmployeeResponseOrganization(
     val userId:Long,
     val fullName:String,
     val phoneNumber:String,
-    val age:Long,
     val position:String
 )
 

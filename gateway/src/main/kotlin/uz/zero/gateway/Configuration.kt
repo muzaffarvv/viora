@@ -56,8 +56,15 @@ class SecurityConfig {
                         val mutatedRequest = exchange.request.mutate()
                         val detailsJson = objectMapper.writeValueAsString(details).compress()
                         mutatedRequest.header(USER_DETAILS_HEADER_KEY, detailsJson)
-                        exchange.attributes[USER_ID_HEADER_KEY] = details[USER_ID_KEY]
-                        exchange.attributes[USER_NAME_HEADER_KEY] = details[USER_USERNAME_KEY]
+                        
+                        // ConcurrentHashMap doesn't allow null values - only put non-null values
+                        details[USER_ID_KEY]?.let { userId ->
+                            exchange.attributes[USER_ID_HEADER_KEY] = userId
+                        }
+                        details[USER_USERNAME_KEY]?.let { username ->
+                            exchange.attributes[USER_NAME_HEADER_KEY] = username
+                        }
+                        
                         val newExchange = exchange.mutate().request(mutatedRequest.build()).build()
                         return@flatMap chain.filter(newExchange)
                     } else {

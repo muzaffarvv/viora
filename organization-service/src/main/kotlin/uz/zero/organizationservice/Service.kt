@@ -104,8 +104,8 @@ class EmployeeServiceImpl(
 
     @Transactional
     override fun create(employeeCreateRequest: EmployeeCreateRequest) {
-        val user = userClient.getUserById(employeeCreateRequest.userId)
-        var organization = organizationRepository.findByIdAndActive(employeeCreateRequest.organizationId, true)
+        val user = userClient.getUser(employeeCreateRequest.userId)
+        val organization = organizationRepository.findByIdAndActive(employeeCreateRequest.organizationId, true)
             ?:throw OrganizationNotFoundException()
         employeeRepository.save(employeeMapper.toEntity(employeeCreateRequest,organization ))
         userClient.changeCurrentOrg(ChangeCurrentOrganizationRequest(user.id, organization.id!!))
@@ -114,18 +114,13 @@ class EmployeeServiceImpl(
 
 
     override fun getOne(id: Long): EmployeeResponse {
-        var employee = employeeRepository.findById(id)
-        if (employee==null)
-            throw EmployeeNotFoundException()
-        return employeeMapper.toDto(employee as Employee)
+        val employee = employeeRepository.findById(id)
+        return employeeMapper.toDto(employee.get())
     }
-
 
     @Transactional
     override fun update(id: Long, employeeUpdateRequest: EmployeeUpdateRequest) {
         var employee : Optional<Employee?> = employeeRepository.findById(id)
-        if (employee==null)
-            throw EmployeeNotFoundException()
         employeeUpdateRequest.run {
             userId?.let {
                 if (userId!=0L)
@@ -142,7 +137,7 @@ class EmployeeServiceImpl(
                 (employee as Employee).position = position
             }
         }
-        employeeRepository.save(employee as Employee)
+        employeeRepository.save(employee.get())
     }
 
     override fun getAll(): List<EmployeeResponse> {
@@ -152,37 +147,30 @@ class EmployeeServiceImpl(
         }
     }
 
-    /*
-        override fun getAllOrganization(orgId: Long): List<EmployeeResponseOrganization> {
-            val org = organizationRepository.findByIdAndActive(orgId, true)
-                ?:throw OrganizationNotFoundException()
-
-            val users = employeeRepository.findAllByOrganization(org).map {
-                it.accountId
-            }
-            val userEmployees = userClient.getUsersByIds(UserBatchRequest(users))
-
-            userEmployees.map { userResponse->
-
-
-            }
-
-
-        }
-
-     */
+//        override fun getAllOrganization(orgId: Long): List<EmployeeResponseOrganization> {
+//            val org = organizationRepository.findByIdAndActive(orgId, true)
+//                ?:throw OrganizationNotFoundException()
+//
+//            val users = employeeRepository.findAllByOrganization(org).map {
+//                it.accountId
+//            }
+//            val userEmployees = userClient.getUsersByIds(UserBatchRequest(users))
+//
+//            userEmployees.map { userResponse->
+//
+//
+//            }
+//
+//
+//        }
 
     override fun delete(id: Long) {
-        var employee = employeeRepository.findById(id)
-        if (employee==null)
-            throw EmployeeNotFoundException()
+        val employee = employeeRepository.findById(id)
         employeeRepository.trash(id)
     }
 
-
-
     override fun changeCurrentOrg(changeCurrentOrganizationRequest: ChangeCurrentOrganizationRequest) {
-        val user = userClient.getUserById(changeCurrentOrganizationRequest.userId)
+        val user = userClient.getUser(changeCurrentOrganizationRequest.userId)
 
         val organization =
             organizationRepository.findByIdAndActive(changeCurrentOrganizationRequest.newOrgId, true)

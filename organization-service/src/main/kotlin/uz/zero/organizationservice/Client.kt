@@ -6,16 +6,16 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@FeignClient(name = "auth-service", url ="http://localhost:8089",configuration = [FeignOAuth2TokenConfig::class])
+@FeignClient(name = "auth-service", url ="http://localhost:8081",configuration = [FeignOAuth2TokenConfig::class])
 interface UserClient{
 
-    @GetMapping("user/{userId}")
-    fun getUserById(@PathVariable userId: Long): UserResponse
+    @GetMapping("/{id}")
+    fun getUser(@PathVariable id: Long): UserResponse
 
-    @PostMapping("/api/users/batch")
-    fun getUsersByIds(@RequestBody dto: UserBatchRequest): List<UserResponse>
+//    @PostMapping("/api/users/batch")
+//    fun getUsersByIds(@RequestBody dto: UserBatchRequest): List<UserResponse>
 
-    @PostMapping("user/set-org")
+    @PostMapping("/set-org")
     fun changeCurrentOrg(@RequestBody changeCurrentOrganizationRequest: ChangeCurrentOrganizationRequest)
 
 }
