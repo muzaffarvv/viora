@@ -16,8 +16,15 @@ class JwtAuthenticationConverter(
     override fun convert(source: Jwt): Mono<JwtAuthenticationToken> {
         return authService.getUserInfo(source.tokenValue)
             .flatMap { userInfo: Map<String, Any?> ->
-                val username = userInfo[USER_USERNAME_KEY] as String
-                val role = userInfo[USER_ROLE_KEY] as String
+                // Extract username with fallback to phoneNum if username is not present
+                val username = (userInfo[USER_USERNAME_KEY] as? String) 
+                    ?: (userInfo["phoneNum"] as? String) 
+                    ?: throw BadCredentialsException("Missing username or phoneNum in user info response")
+                
+                // Extract role safely
+                val role = (userInfo[USER_ROLE_KEY] as? String)
+                    ?: throw BadCredentialsException("Missing role in user info response")
+                
                 val authorities = listOf(SimpleGrantedAuthority(role))
                 val jwtToken = JwtAuthenticationToken(source, authorities, username)
 

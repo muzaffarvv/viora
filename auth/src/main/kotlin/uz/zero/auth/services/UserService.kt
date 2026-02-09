@@ -11,7 +11,9 @@ import uz.zero.auth.exceptions.PasswordMismatchException
 import uz.zero.auth.exceptions.PhoneNumberAlreadyTakenException
 import uz.zero.auth.exceptions.UserNotFoundException
 import uz.zero.auth.mappers.UserEntityMapper
+import uz.zero.auth.model.responses.UserInfoResponse
 import uz.zero.auth.repositories.UserRepository
+import uz.zero.auth.utils.userId
 
 interface UserService {
     fun create(createDto: UserCreateRequest): Long // return user_id
@@ -20,6 +22,8 @@ interface UserService {
     fun getAll(): List<UserResponse>
     fun update(id: Long, updateDto: UserUpdateRequest): UserResponse
     fun delete(id: Long): Boolean
+
+    fun setOrg(userId: Long, orgId: Long): UserResponse
 
     fun checkPhoneNumber(phoneNum: String): Boolean
     fun getByPhoneNumber(phoneNum: String): UserResponse? // for admin
@@ -74,6 +78,19 @@ class UserServiceImpl(
     override fun getByPhoneNumber(phoneNum: String): UserResponse? {
         val user = userRepository.findByPhoneNumAndDeletedFalse(phoneNum)
             ?: throw UserNotFoundException(phoneNum)
+        return userMapper.toUserResponse(user)
+    }
+
+    fun profile(): UserInfoResponse {
+        val currentUserId = userId()
+        val user = getUserById(currentUserId)
+        return userMapper.toUserInfoResponse(user)
+    }
+
+    override fun setOrg(userId: Long, orgId: Long): UserResponse {
+        val user = getUserById(userId)
+        user.orgId = orgId
+        userRepository.save(user)
         return userMapper.toUserResponse(user)
     }
 

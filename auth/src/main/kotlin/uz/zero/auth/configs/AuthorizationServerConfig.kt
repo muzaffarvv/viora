@@ -65,9 +65,6 @@ class AuthorizationServerConfig {
                             .authenticationProvider(passwordGrantAuthenticationProvider)
                     }
             }
-
-        // ENABLE: Basic Auth for Client Authentication (ClientId/Secret)
-//        http.httpBasic(org.springframework.security.config.Customizer.withDefaults())
         return http.build()
     }
 
@@ -110,16 +107,12 @@ class AuthorizationServerConfig {
 
                     val userId = principal.getUserId()
 
-                    // CHECK: First, check if a specific organization context was requested (via attributes).
-                    // This allows for explicit organization switching without changing the "active" org in DB.
                     val explicitOrgId = context.authorization?.attributes?.get(JWT_ORGANIZATION_ID_KEY) as? Long
 
                     val orgIdToUse = explicitOrgId ?: try {
                         // FALLBACK: If no explicit org requested, use the user's active organization.
                         organizationClient.getActiveOrganization(userId).organizationId
                     } catch (e: Exception) {
-                        // RESILIENCE: formatting or service errors shouldn't block login if the user has no org.
-                        // We proceed without the claim.
                         null
                     }
 

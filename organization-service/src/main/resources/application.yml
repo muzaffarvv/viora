@@ -1,11 +1,14 @@
 spring:
   application:
-    name: gateway
+    name: organization
   cloud:
     config:
       uri: http://localhost:8888
   config:
     import: 'configserver:'
+
+  profiles:
+    active: local
 
 logging:
   level:

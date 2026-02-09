@@ -45,7 +45,13 @@ class AuthServiceImpl(
             .header(HttpHeaders.AUTHORIZATION, "Bearer $token")
             .retrieve()
             .bodyToMono<String>()
-            .map { objectMapper.parseMap(it) }
-            .doOnError { emptyMap<String, Any?>() }
+            .map { responseBody ->
+                logger.debug("Received user-info response: {}", responseBody)
+                objectMapper.parseMap(responseBody)
+            }
+            .onErrorResume { error ->
+                logger.error("Failed to fetch user info from auth service", error)
+                Mono.error(error)
+            }
     }
 }

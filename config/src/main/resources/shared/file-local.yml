@@ -1,0 +1,19 @@
+server:
+  port: ${services.ports.file}
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${PG_URL:jdbc:postgresql://localhost:5432/viora_db}
+    username: ${PG_USER:postgres}
+    password: ${PG_PASSWORD:admin}
+    hikari:
+      schema: file
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_schema: file
+    hibernate:
+      ddl-auto: update
