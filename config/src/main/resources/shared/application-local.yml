@@ -2,14 +2,14 @@ services:
   hosts:
     gateway: http://localhost:8080
     auth: http://localhost:8081
-#    payment: http://localhost:8082
+    organization: http://localhost:8082
 #    product: http://localhost:8083
 #TODO bu namuna
 
   ports:
     gateway: 8080
     auth: 8081
-#    payment: 8082
+    organization: 8082
 #    product: 8083
 #TODO bu namuna
 
