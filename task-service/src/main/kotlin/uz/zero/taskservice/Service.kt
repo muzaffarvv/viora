@@ -68,7 +68,7 @@ class TaskServiceImpl(
             ?: throw IllegalStateException("Board with id ${board.id} does not have an initial 'Not started' state.")
 
         val task = Task(
-            ownerAccountId = request.ownerAccountId,
+            ownerAccountId = userId(),
             name = request.name,
             description = request.description,
             dueDate = request.dueDate,
@@ -145,7 +145,7 @@ class ProjectServiceImpl(private val projectRepository: ProjectRepository) : Pro
         val project = Project(
             name = request.name,
             description = request.description,
-            organizationId = request.organizationId
+            organizationId = currentOrgId()
         )
         return projectRepository.save(project).toResponse()
     }

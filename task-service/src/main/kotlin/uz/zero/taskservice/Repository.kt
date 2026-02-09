@@ -58,8 +58,9 @@ interface ProjectRepository: BaseRepository<Project>
 
 @Repository
 interface BoardRepository: BaseRepository<Board>{
-//    @Query("SELECT b FROM Board b WHERE b.projectId = :projectId AND b.deleted = FALSE")
-//    fun findAllByProjectIdAndDeletedFalse(projectId: Long): List<Board>
+    @Query("SELECT b FROM Board b WHERE b.projectId = :projectId AND b.deleted = FALSE")
+    fun findAllByProjectIdAndDeletedFalse(projectId: Long): List<Board>
+
 }
 
 @Repository

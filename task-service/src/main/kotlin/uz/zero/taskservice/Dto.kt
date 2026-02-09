@@ -1,5 +1,8 @@
 package uz.zero.taskservice
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import java.util.Date
 
 data class CreateTaskRequest(
@@ -8,6 +11,8 @@ data class CreateTaskRequest(
     val description: String,
     val dueDate: Date,
     val maxEmployee: Int,
+    @field:Max(100)
+    @field:Min(0)
     val priority: Int,
     val boardId: Long
 )
@@ -62,8 +67,7 @@ fun TaskState.toResponse() = TaskStateResponse(
 
 data class CreateProjectRequest(
     val name: String,
-    val description: String,
-    val organizationId: Long
+    val description: String
 )
 
 data class UpdateProjectRequest(
@@ -152,4 +156,12 @@ data class AssignAccountToTaskRequest(
 data class AccountTaskResponse(
     val id: Long,
     val accountId: Long
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class UserInfoResponse(
+    val id: Long,
+    val fullName: String,
+    val username: String,
+    val role: String,
 )

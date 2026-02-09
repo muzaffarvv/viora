@@ -1,6 +1,5 @@
 package uz.zero.gateway
 
-
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -18,13 +17,11 @@ import reactor.core.publisher.Mono
 import java.util.regex.Pattern
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR
 
-@Component
 @Configuration
-@ConfigurationProperties(prefix = "spring.cloud.gateway")
+@ConfigurationProperties(prefix = "restricted") // application.yml da restricted.paths list bo'lishi kerak
 class RestrictedPathProperties {
-    lateinit var restrictedPaths: List<String>
+    var restrictedPaths: List<String> = emptyList() // default qiymat bilan
 }
-
 
 @Component
 class LoggingGlobalFilter : GlobalFilter, Ordered {
@@ -52,12 +49,12 @@ class LoggingGlobalFilter : GlobalFilter, Ordered {
     override fun getOrder(): Int = -1
 }
 
-
 @Component
 class RestrictedPathFilter(
-    restrictedPaths: RestrictedPathProperties
+    restrictedPathProperties: RestrictedPathProperties
 ) : GlobalFilter, Ordered {
-    private val restrictedPatterns: List<Pattern> = restrictedPaths.restrictedPaths.map { Pattern.compile(it) }
+
+    private val restrictedPatterns: List<Pattern> = restrictedPathProperties.restrictedPaths.map { Pattern.compile(it) }
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         if (exchange.attributes.putIfAbsent(this.javaClass.getIsRoutedKey(), true) != null)
@@ -77,7 +74,6 @@ class RestrictedPathFilter(
 
     override fun getOrder() = -1
 }
-
 
 @Component
 class RequestIdHeaderGlobalFilter : GlobalFilter, Ordered {
@@ -108,9 +104,7 @@ class RequestIdHeaderGlobalFilter : GlobalFilter, Ordered {
     }
 
     override fun getOrder() = -2
-
 }
-
 
 @Component
 @ConditionalOnBean(RequestIdHeaderGlobalFilter::class)

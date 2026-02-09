@@ -1,6 +1,8 @@
 spring:
   application:
     name: gateway
+  profiles:
+    active: local  # Activate local profile to load gateway-local.yml from config server
   cloud:
     config:
       uri: http://localhost:8888

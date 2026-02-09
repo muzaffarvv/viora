@@ -5,6 +5,11 @@ spring:
     mongodb:
       uri: mongodb://localhost/gateway
       auto-index-creation: true
+  security:
+    oauth2:
+      resource-server:  # Fixed typo: was 'resourceserver', should be 'resource-server'
+        jwt:
+          issuer-uri: ${services.hosts.auth}  # OAuth2 issuer
   cloud:
     gateway:
       restricted-paths:

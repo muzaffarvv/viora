@@ -13,6 +13,7 @@ import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Temporal
 import jakarta.persistence.TemporalType
+import jakarta.validation.constraints.Positive
 import org.hibernate.annotations.ColumnDefault
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -41,6 +42,7 @@ class Task(
     var description: String,
     var dueDate: Date,
     var maxEmployee: Int,
+    @Positive
     var priority: Int,
     @ManyToOne(fetch = FetchType.LAZY)
     var boardId: Board,
