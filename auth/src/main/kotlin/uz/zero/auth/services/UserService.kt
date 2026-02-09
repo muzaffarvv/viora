@@ -11,7 +11,9 @@ import uz.zero.auth.exceptions.PasswordMismatchException
 import uz.zero.auth.exceptions.PhoneNumberAlreadyTakenException
 import uz.zero.auth.exceptions.UserNotFoundException
 import uz.zero.auth.mappers.UserEntityMapper
+import uz.zero.auth.model.responses.UserInfoResponse
 import uz.zero.auth.repositories.UserRepository
+import uz.zero.auth.utils.userId
 
 interface UserService {
     fun create(createDto: UserCreateRequest): Long // return user_id
@@ -75,6 +77,12 @@ class UserServiceImpl(
         val user = userRepository.findByPhoneNumAndDeletedFalse(phoneNum)
             ?: throw UserNotFoundException(phoneNum)
         return userMapper.toUserResponse(user)
+    }
+
+    fun profile(): UserInfoResponse {
+        val currentUserId = userId()
+        val user = getUserById(currentUserId)
+        return userMapper.toUserInfoResponse(user)
     }
 
 //    fun getUserEntityByPhone(phoneNum: String): User {

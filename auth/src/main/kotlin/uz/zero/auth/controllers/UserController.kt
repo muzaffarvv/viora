@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import uz.zero.auth.model.requests.UserCreateRequest
 import uz.zero.auth.model.requests.UserUpdateRequest
+import uz.zero.auth.model.responses.UserInfoResponse
 import uz.zero.auth.model.responses.UserResponse
 import uz.zero.auth.services.AuthService
 import uz.zero.auth.services.UserServiceImpl
@@ -21,6 +22,9 @@ class UserController(
     fun register(@RequestBody @Valid request: UserCreateRequest): Long {
         return authService.register(request)
     }
+
+    @GetMapping("/me")
+    fun userMe(): UserInfoResponse = userServiceImpl.profile()
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): UserResponse {
