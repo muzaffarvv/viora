@@ -18,8 +18,11 @@ class User(
     @Column(nullable = false)
     var password: String,
 
+    var orgId: Long? = null,
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     var role: Role
 
 ) : BaseEntity()
+

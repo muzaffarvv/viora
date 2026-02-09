@@ -5,4 +5,5 @@ import uz.zero.auth.entities.User
 
 interface UserRepository : BaseRepository<User> {
     fun findByPhoneNumAndDeletedFalse(phoneNum: String): User?
+    fun existsByPhoneNum(phoneNum: String): Boolean
 }

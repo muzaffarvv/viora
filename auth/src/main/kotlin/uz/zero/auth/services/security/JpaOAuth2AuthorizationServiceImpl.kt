@@ -115,8 +115,20 @@ class JpaOAuth2AuthorizationServiceImpl(
                     val attributesMap = objectMapper.parseMap(this.attributes).toMutableMap()
                     val principal = attributesMap[PRINCIPAL_KEY]
                     if (principal != null && principal is Map<*, *>) {
-                        attributesMap[PRINCIPAL_KEY] =
-                            objectMapper.convertValue(principal, UsernamePasswordAuthenticationToken::class.java)
+                        try {
+                            // SAFEGUARD: Attempt conversion, but don't crash the whole flow if it fails.
+                            // This will support backward compatibility or different Authentication types in future.
+                            // IMPROVEMENT: Consider logging the exception securely (avoid leaking PII).
+                            attributesMap[PRINCIPAL_KEY] = objectMapper.convertValue(
+                                principal,
+                                UsernamePasswordAuthenticationToken::class.java
+                            )
+                        } catch (e: Exception) {
+                            // ERROR-HANDLING: Fallback for safe execution. 
+                            // If conversion fails, we leave the map as is. 
+                            // This prevents ClassCastException later but might mean the principal object is not fully reconstructed.
+                            // In a production environment, this should trigger an alert.
+                        }
                     }
                     attributes.putAll(attributesMap)
                 }

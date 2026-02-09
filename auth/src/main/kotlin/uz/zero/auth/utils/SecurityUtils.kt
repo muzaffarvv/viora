@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import uz.zero.auth.model.security.CustomUserDetails
-
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 abstract class LongMixin
@@ -25,29 +25,55 @@ abstract class LongMixin
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal abstract class CustomUserDetailsMixin
 
-
 class CustomUserDetailsDeserializer : JsonDeserializer<CustomUserDetails>() {
-    override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): CustomUserDetails {
-        val mapper = jp.codec as ObjectMapper
-        val root = mapper.readTree<JsonNode>(jp)
 
-        fun requireField(field: String): JsonNode {
-            return root.get(field)?.takeIf { !it.isNull || !it.isMissingNode }
-                ?: throw IllegalArgumentException("Missing required field: $field")
+    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): CustomUserDetails {
+        val mapper = p.codec as ObjectMapper
+        val root = mapper.readTree<JsonNode>(p)
+
+        // Majburiy maydonlarni tekshirish uchun yordamchi funksiya
+        fun req(field: String): JsonNode =
+            root.get(field) ?: throw IllegalArgumentException("Missing field: $field")
+
+        val id = req("id").asLong()
+        val phoneNumber = req("phoneNumber").asText()
+        val password = req("password").asText()
+        val enabled = req("enabled").asBoolean()
+
+        // --- Authorities (Huquqlar) qismini xavfsiz o'qish ---
+        val authoritiesNode = root.get("authorities")
+        val authorities = mutableSetOf<SimpleGrantedAuthority>()
+
+        authoritiesNode?.forEach { node ->
+            val roleStr = if (node.isObject) {
+                // Agar [{"authority": "ROLE_ADMIN"}] ko'rinishida bo'lsa
+                node.get("authority")?.asText()
+            } else {
+                // Agar ["ROLE_ADMIN"] ko'rinishida bo'lsa
+                node.asText()
+            }
+
+            if (!roleStr.isNullOrBlank()) {
+                authorities.add(SimpleGrantedAuthority(roleStr))
+            }
         }
 
-        val id = requireField("id").asLong()
-        val username = requireField("username").asText()
-        val password = requireField("password").asText()
-        val role = requireField("role").asText()
-        val enabled = requireField("enabled").asBoolean()
+        // Agar huquqlar topilmasa, NPE yoki boshqa xatolikni oldini olish uchun default role
+        if (authorities.isEmpty()) {
+            authorities.add(SimpleGrantedAuthority("ROLE_USER"))
+        }
+        // -----------------------------------------------------
+
+        // organizationId null bo'lishi mumkinligini hisobga olamiz
+        val organizationId = root.get("organizationId")?.asLong() ?: 0L
 
         return CustomUserDetails(
             id = id,
-            username = username,
+            phoneNumber = phoneNumber,
             password = password,
-            role = role,
-            enabled = enabled,
+            organizationId = organizationId,
+            authorities = authorities,
+            enabled = enabled
         )
     }
 }

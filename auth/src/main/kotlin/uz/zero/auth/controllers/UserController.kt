@@ -7,47 +7,45 @@ import uz.zero.auth.model.requests.UserCreateRequest
 import uz.zero.auth.model.requests.UserUpdateRequest
 import uz.zero.auth.model.responses.UserInfoResponse
 import uz.zero.auth.model.responses.UserResponse
-import uz.zero.auth.services.UserService
-import java.math.BigDecimal
+import uz.zero.auth.services.AuthService
+import uz.zero.auth.services.UserServiceImpl
 
 @RestController
-@RequestMapping("user")
+@RequestMapping()
 class UserController(
-    private val userService: UserService
+    private val userServiceImpl: UserServiceImpl,
+    private val authService: AuthService
 ) {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun registerUser(@RequestBody @Valid request: UserCreateRequest): UserResponse = userService.create(request)
+    fun register(@RequestBody @Valid request: UserCreateRequest): Long {
+        return authService.register(request)
+    }
 
     @GetMapping("/me")
-    fun userMe(): UserInfoResponse = userService.profile()
+    fun userMe(): UserInfoResponse = userServiceImpl.profile()
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): UserResponse = userService.getById(id)
+    fun getUser(@PathVariable id: Long): UserResponse {
+        return userServiceImpl.getById(id)
+    }
 
-    @GetMapping("/list")
-    fun getAllNotDeleted(): List<UserResponse> = userService.getAll()
+    @GetMapping("/all")
+    fun getAllUsers(): List<UserResponse> {
+        return userServiceImpl.getAll()
+    }
 
     @PutMapping("/{id}")
     fun updateUser(
         @PathVariable id: Long,
-        @RequestBody @Valid request: UserUpdateRequest
-    ): UserResponse = userService.update(id, request)
+        @RequestBody request: UserUpdateRequest
+    ): UserResponse {
+        return userServiceImpl.update(id, request)
+    }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteUser(@PathVariable id: Long) = userService.softDelete(id)
-
-    @PostMapping("/{id}/deposit")
-    fun deposit(
-        @PathVariable id: Long,
-        @RequestParam amount: BigDecimal
-    ) = userService.deposit(id, amount)
-
-    @PostMapping("/{id}/withdraw")
-    fun withdraw(
-        @PathVariable id: Long,
-        @RequestParam amount: BigDecimal
-    ) = userService.withdraw(id, amount)
+    fun deleteUser(@PathVariable id: Long): Boolean {
+        return userServiceImpl.delete(id)
+    }
 }

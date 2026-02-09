@@ -28,21 +28,38 @@ class UserNotFoundException(private vararg val args: Any?) : DavrException() {
     override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
 }
 
-class UsernameAlreadyTakenException(private vararg val args: Any?) : DavrException() {
-    override fun errorCode(): ErrorCode = ErrorCode.USERNAME_ALREADY_TAKEN
-
-    override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
-}
-
-class InsufficientFundsException(private vararg val args: Any?) : DavrException() {
-    override fun errorCode(): ErrorCode = ErrorCode.INSUFFICIENT_FUNDS
-
-    override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
-}
-
 class RoleNotFoundException(private vararg val args: Any?) : DavrException() {
 
     override fun errorCode(): ErrorCode = ErrorCode.ROLE_NOT_FOUND
+
+    override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
+}
+
+
+class PhoneNumberAlreadyTakenException(private vararg val args: Any?) : DavrException() {
+
+    override fun errorCode(): ErrorCode = ErrorCode.PHONE_NUMBER_ALREADY_EXISTS
+
+    override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
+}
+
+class PasswordMismatchException(private vararg val args: Any?) : DavrException() {
+
+    override fun errorCode(): ErrorCode = ErrorCode.PASSWORD_MISMATCH
+
+    override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
+}
+
+class InvalidPasswordException(private vararg val args: Any?) : DavrException() {
+
+    override fun errorCode(): ErrorCode = ErrorCode.INVALID_PASSWORD
+
+    override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
+}
+
+class InvalidCredentials(private vararg val args: Any?) : DavrException() {
+
+    override fun errorCode(): ErrorCode = ErrorCode.INVALID_PASSWORD
 
     override fun getErrorMessageArguments(): Array<Any?> = args.toList().toTypedArray()
 }

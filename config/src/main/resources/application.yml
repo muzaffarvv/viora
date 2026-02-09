@@ -12,3 +12,10 @@ spring:
   security:
     user:
       password: ${CONFIG_PASSWORD:ff6e045a-f86d-401e-96bf-bfe654add3be}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+    reactor.netty: DEBUG

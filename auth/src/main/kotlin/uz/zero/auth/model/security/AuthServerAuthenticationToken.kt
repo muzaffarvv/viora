@@ -7,6 +7,7 @@ import uz.zero.auth.enums.AuthServerGrantType
 class AuthServerAuthenticationToken(
     val parameters: Map<String, Array<String>>,
     val grantTypes: AuthServerGrantType,
+    val organizationId: Long?,
     private val clientPrincipal: OAuth2ClientAuthenticationToken
 ) : AbstractAuthenticationToken(null) {
     override fun getCredentials(): Any {

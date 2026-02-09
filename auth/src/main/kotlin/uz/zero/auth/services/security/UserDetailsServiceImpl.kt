@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 import uz.zero.auth.model.security.CustomUserDetails
 import uz.zero.auth.repositories.UserRepository
@@ -15,6 +16,7 @@ class UserDetailsServiceImpl(
     private val userRepository: UserRepository
 ) : UserDetailsService {
 
+    @Transactional(readOnly = true)
     override fun loadUserByUsername(phoneNum: String): UserDetails {
         val user = userRepository.findByPhoneNumAndDeletedFalse(phoneNum)
             ?: throw UsernameNotFoundException("User not found with phone number: $phoneNum")
@@ -28,6 +30,7 @@ class UserDetailsServiceImpl(
             phoneNumber = user.phoneNum,
             password = user.password,
             authorities = authorities,
+            organizationId = user.orgId,
             enabled = user.active
         )
     }

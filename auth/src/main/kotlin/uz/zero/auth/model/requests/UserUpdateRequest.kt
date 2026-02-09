@@ -7,7 +7,7 @@ data class UserUpdateRequest(
 
     @field:Size(min = 2, max = 72)
     @field:NotSpace
-    val firstName: String,
+    val firstName: String?,
 
     @field:Size(max = 60)
     val lastName: String?,
