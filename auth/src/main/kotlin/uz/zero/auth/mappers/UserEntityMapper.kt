@@ -33,7 +33,8 @@ class UserEntityMapper {
             firstName = user.firstName,
             lastName = user.lastName,
             phoneNum = user.phoneNum,
-            role = user.role.name
+            role = user.role.name,
+            orgId = user.orgId
         )
     }
 
@@ -44,6 +45,7 @@ class UserEntityMapper {
             lastName = user.lastName,
             phoneNum = user.phoneNum,
             role = user.role.code,
+            orgId = user.orgId,
             createdAt = user.createdDate,
             updatedAt = user.lastModifiedBy,
             active = user.active,

@@ -1,15 +1,12 @@
 package uz.zero.auth.services
 
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.stereotype.Service
 import uz.zero.auth.model.requests.UserCreateRequest
 import uz.zero.auth.model.requests.UserUpdateRequest
 import uz.zero.auth.model.responses.UserResponse
-
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uz.zero.auth.entities.User
-import uz.zero.auth.exceptions.InvalidCredentials
-import uz.zero.auth.exceptions.InvalidPasswordException
 import uz.zero.auth.exceptions.PasswordMismatchException
 import uz.zero.auth.exceptions.PhoneNumberAlreadyTakenException
 import uz.zero.auth.exceptions.UserNotFoundException
@@ -44,7 +41,7 @@ class UserServiceImpl(
         return savedUser.id!!
     }
 
-    override fun getById(id: Long): UserResponse? {
+    override fun getById(id: Long): UserResponse {
         val user = getUserById(id)
         return userMapper.toUserResponse(user)
     }
@@ -80,11 +77,10 @@ class UserServiceImpl(
         return userMapper.toUserResponse(user)
     }
 
-    // for auth
-    fun getUserEntityByPhone(phoneNum: String): User {
-        return userRepository.findByPhoneNumAndDeletedFalse(phoneNum)
-            ?: throw UserNotFoundException(phoneNum)
-    }
+//    fun getUserEntityByPhone(phoneNum: String): User {
+//        return userRepository.findByPhoneNumAndDeletedFalse(phoneNum)
+//            ?: throw UserNotFoundException("User with phone number $phoneNum not found")
+//    }
 }
 
 @Service
@@ -92,9 +88,6 @@ class AuthService(
     private val userService: UserServiceImpl,
     private val passwordEncoder: PasswordEncoder
 ) {
-
-    // TODO Register -> PhoneNumberAlreadyExists or PasswordMismatch
-    // TODO Login -> UserNotFound with phoneNum or InvalidCredentials
 
     fun register(request: UserCreateRequest): Long {
         if (userService.checkPhoneNumber(request.phoneNum)) {
@@ -108,16 +101,6 @@ class AuthService(
         val hashedPassword = passwordEncoder.encode(request.password)
         val userId = userService.create(request.copy(password = hashedPassword, confirmPassword = hashedPassword))
         return userId
-    }
-
-    fun login(phoneNum: String, password: String): UserResponse {
-        val user = userService.getUserEntityByPhone(phoneNum)
-
-        if (!passwordEncoder.matches(password, user.password)) {
-            throw InvalidCredentials("Invalid credentials")
-        }
-
-        return userService.getById(user.id!!)!!
     }
 }
 

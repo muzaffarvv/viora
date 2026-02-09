@@ -5,5 +5,6 @@ data class UserResponse(
     val firstName: String,
     val lastName: String?,
     val phoneNum: String,
+    val orgId: Long?,
     val role: String,
 )
